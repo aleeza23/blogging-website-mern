@@ -2,9 +2,9 @@ const AppError = require("../utils/error.utils");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/generateToken.utils");
 
 const registerController = async (req, res) => {
-	// get data from body
 	const { firstName, lastName, email, password } = req.body;
 
 	// check in db if email exists
@@ -24,22 +24,43 @@ const registerController = async (req, res) => {
 	});
 
 	// generate token
-	const token = jwt.sign(
-		{
-			userId: user.id,
-			firstName: user.firstName,
-			lastName: user.lastName,
-			email: user.email,
-		},
-		process.env.JWT_SECRET,
-		{ expiresIn: "7d" },
-	);
+	const token = generateToken(user);
 
 	res.status(201).send({ success: true, data: user, token });
 };
 
-const loginController = (req, res) => {
-	res.json({ success: true, text: "hey" });
+const loginController = async (req, res) => {
+	const { email, password } = req.body;
+
+	const user = await User.findOne({ email }).select("+password");
+
+	if (!user) {
+		throw new AppError(404, "Email or password is wrong");
+	}
+
+	// compare password
+	const passwordMatched = await bcrypt.compare(password, user.password);
+	if (!passwordMatched) {
+		throw new AppError(400, "Password is wrong");
+	}
+
+	// generate token
+	const token = generateToken(user);
+
+	res.status(200).send({
+		success: true,
+		data: {
+			id: user.id,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			email: user.email,
+		},
+		token,
+	});
 };
 
-module.exports = { registerController, loginController };
+const authController = (req, res) => {
+	res.status(200).send({ success: true, data: req.user });
+};
+
+module.exports = { registerController, loginController, authController };
