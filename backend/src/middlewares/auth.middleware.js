@@ -1,8 +1,9 @@
 const AppError = require("../utils/error.utils");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
+const asyncWrap = require("../utils/asyncWrap.utils");
 
-const protectRoute = async (req, res, next) => {
+const protectRoute = asyncWrap(async (req, res, next) => {
 	const { authorization } = req.headers;
 
 	if (!authorization) {
@@ -17,6 +18,6 @@ const protectRoute = async (req, res, next) => {
 	req.user = user;
 
 	next();
-};
+});
 
 module.exports = protectRoute;
