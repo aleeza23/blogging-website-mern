@@ -4,12 +4,16 @@ const {
 	createPostController,
 	getPostController,
 	deletePostController,
+	updatePostController,
+	getPostsController,
 } = require("../controllers/post.controller");
 const protectRoute = require("../middlewares/auth.middleware");
 const router = express.Router();
 
 router.post("/post", protectRoute, asyncWrap(createPostController));
+router.get("/post", asyncWrap(getPostsController));
 router.get("/post/:slug", asyncWrap(getPostController));
 router.delete("/post/:id", protectRoute, asyncWrap(deletePostController));
+router.put("/post/:id", protectRoute, asyncWrap(updatePostController));
 
 module.exports = router;

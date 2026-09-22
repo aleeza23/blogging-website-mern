@@ -36,6 +36,9 @@ const postSchema = new Schema(
 	{ timestamps: true },
 );
 
+// can search from both title and content
+postSchema.index({ title: "text", content: "text" });
+
 const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;

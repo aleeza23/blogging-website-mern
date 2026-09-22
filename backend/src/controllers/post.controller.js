@@ -2,6 +2,7 @@ const Post = require("../models/post.model");
 const AppError = require("../utils/error.utils");
 const slugify = require("slugify");
 
+// create post
 const createPostController = async (req, res) => {
 	const { title, content, coverImageUrl, tags, author, status } = req.body;
 
@@ -55,8 +56,67 @@ const deletePostController = async (req, res) => {
 	res.status(200).json({ success: true, message: "Post deleted successfully" });
 };
 
+// update post
+const updatePostController = async (req, res) => {
+	const { id } = req.params;
+
+	const post = await Post.findById(id);
+	if (!post) {
+		throw new AppError(404, "Post not found");
+	}
+
+	if (post.author.toString() !== req.user.id) {
+		throw new AppError(401, "Unauthorized: Cannot update post");
+	}
+
+	const { title, content, coverImageUrl, tags, status } = req.body;
+	if (title !== undefined) post.title = title;
+	if (content !== undefined) post.content = content;
+	if (coverImageUrl !== undefined) post.coverImageUrl = coverImageUrl;
+	if (tags !== undefined) post.tags = tags;
+	if (status !== undefined) post.status = status;
+
+	await post.save();
+
+	res.status(200).json({ success: true, message: "Post updated successfully" });
+};
+
+// get all posts
+const getPostsController = async (req, res) => {
+	const { search, tag } = req.query;
+	const page = Math.max(parseInt(req.query.page) || 1, 1);
+	const limit = Math.min(parseInt(req.query.limit) || 10, 30);
+	const skip = (page - 1) * limit;
+
+	const filters = { status: "published" };
+	if (tag) filters.tags = tag;
+	if (search) filters.$text = { $search: search };
+
+	const [posts, totalPosts] = await Promise.all([
+		Post.find(filters)
+			.skip(skip)
+			.limit(limit)
+			.populate("author", "firstName lastName avatarUrl")
+			.sort({ createdAt: -1 }),
+
+		Post.countDocuments(filters),
+	]);
+
+	res.status(200).json({
+		success: true,
+		data: posts,
+		pagination: {
+			total: totalPosts,
+			currentPage: page,
+			totalPages: Math.ceil(totalPosts / limit),
+		},
+	});
+};
+
 module.exports = {
 	createPostController,
 	getPostController,
 	deletePostController,
+	updatePostController,
+	getPostsController,
 };
