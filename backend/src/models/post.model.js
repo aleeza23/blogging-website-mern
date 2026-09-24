@@ -13,6 +13,7 @@ const postSchema = new Schema(
 			type: String,
 			required: [true, "Content is required"],
 			trim: true,
+			maxLength: 500,
 		},
 		slug: {
 			type: String,

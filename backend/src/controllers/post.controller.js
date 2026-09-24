@@ -4,7 +4,7 @@ const slugify = require("slugify");
 
 // create post
 const createPostController = async (req, res) => {
-	const { title, content, coverImageUrl, tags, author, status } = req.body;
+	const { title, content, coverImageUrl, tags, status } = req.body;
 
 	if (!title || !content) {
 		throw new AppError(400, "Title or content is missing");
@@ -17,7 +17,7 @@ const createPostController = async (req, res) => {
 		content,
 		coverImageUrl,
 		tags,
-		author,
+		author: req.user._id,
 		status,
 	});
 
