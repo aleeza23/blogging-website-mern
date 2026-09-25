@@ -6,6 +6,8 @@ const slugify = require("slugify");
 const createPostController = async (req, res) => {
 	const { title, content, coverImageUrl, tags, status } = req.body;
 
+	console.log(req.file, "req file");
+
 	if (!title || !content) {
 		throw new AppError(400, "Title or content is missing");
 	}

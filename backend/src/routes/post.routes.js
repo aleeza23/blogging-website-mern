@@ -10,11 +10,13 @@ const {
 const protectRoute = require("../middlewares/auth.middleware");
 const validateRequest = require("../middlewares/validate.middleware");
 const postSchema = require("../validators/post.validator");
+const upload = require("../middlewares/upload.middleware");
 const router = express.Router();
 
 router.post(
 	"/post",
 	protectRoute,
+	upload.single("image"),
 	validateRequest(postSchema),
 	asyncWrap(createPostController),
 );
