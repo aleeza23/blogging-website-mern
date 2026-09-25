@@ -1,12 +1,18 @@
 const Post = require("../models/post.model");
 const AppError = require("../utils/error.utils");
 const slugify = require("slugify");
+const uploadToCloudinary = require("../utils/uploadToCloudinary.utils");
 
 // create post
 const createPostController = async (req, res) => {
-	const { title, content, coverImageUrl, tags, status } = req.body;
+	const { title, content, tags, status } = req.body;
 
-	console.log(req.file, "req file");
+	let coverImageUrl = "";
+
+	if (req.file) {
+		const result = await uploadToCloudinary(req.file.buffer, "blog");
+		coverImageUrl = result.secure_url;
+	}
 
 	if (!title || !content) {
 		throw new AppError(400, "Title or content is missing");
