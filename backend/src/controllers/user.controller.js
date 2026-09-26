@@ -2,6 +2,7 @@ const AppError = require("../utils/error.utils");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const generateToken = require("../utils/generateToken.utils");
+const setAuthCookie = require("../utils/cookie.utils");
 
 const registerController = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -24,6 +25,7 @@ const registerController = async (req, res) => {
 
 	// generate token
 	const token = generateToken(user);
+	setAuthCookie(res, token);
 
 	res.status(201).send({ success: true, data: user, token });
 };
@@ -45,6 +47,7 @@ const loginController = async (req, res) => {
 
 	// generate token
 	const token = generateToken(user);
+	setAuthCookie(res, token);
 
 	res.status(200).send({
 		success: true,
