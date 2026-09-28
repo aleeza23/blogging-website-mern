@@ -20,9 +20,9 @@ router.post(
 	validateRequest(postSchema),
 	asyncWrap(createPostController),
 );
-router.get("/post", asyncWrap(getPostsController));
-router.get("/post/:slug", asyncWrap(getPostController));
-router.delete("/post/:id", protectRoute, asyncWrap(deletePostController));
-router.put("/post/:id", protectRoute, asyncWrap(updatePostController));
+router.get("/posts", asyncWrap(getPostsController));
+router.get("/posts/:slug", asyncWrap(getPostController));
+router.delete("/posts/:id", protectRoute, asyncWrap(deletePostController));
+router.patch("/posts/:id", protectRoute, asyncWrap(updatePostController));
 
 module.exports = router;

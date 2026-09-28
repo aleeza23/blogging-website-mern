@@ -16,12 +16,14 @@ import { Login } from "../types";
 import { login } from "../services/auth.service";
 import { toast } from "sonner";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
 	const [loginData, setLoginData] = useState<Login>({
 		email: "",
 		password: "",
 	});
+	const router = useRouter();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setLoginData((prev) => ({
@@ -36,6 +38,7 @@ const LoginForm = () => {
 		try {
 			await login(loginData);
 			toast.success("Login successfully");
+			router.push("/");
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				toast.error(error?.response?.data?.message);

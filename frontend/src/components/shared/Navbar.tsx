@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import Container from "../layout/Container";
+import { useAuth } from "@/context/authContext";
 
 const navLinks = [
 	{ label: "How it works", href: "#how-it-works" },
@@ -13,6 +13,8 @@ const navLinks = [
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
+	const { user } = useAuth();
+	console.log(user);
 
 	const closeMenu = () => setIsOpen(false);
 
@@ -52,19 +54,29 @@ const Navbar = () => {
 
 						{/* Desktop Actions */}
 						<div className="hidden items-center justify-end gap-3 sm:flex">
-							<Link
-								href="/register"
-								className="rounded-md border border-transparent bg-clip-padding px-6 py-1.5 text-sm font-medium whitespace-nowrap outline transition-all"
-							>
-								Sign up
-							</Link>
-
-							<Link
-								href="/login"
-								className="bg-primary text-primary-foreground hover:bg-primary/80 rounded-md border border-transparent bg-clip-padding px-6 py-1.5 text-sm font-medium whitespace-nowrap outline-none transition-all"
-							>
-								Login
-							</Link>
+							{!user ? (
+								<>
+									<Link
+										href="/register"
+										className="rounded-md border border-transparent bg-clip-padding px-6 py-1.5 text-sm font-medium whitespace-nowrap outline transition-all"
+									>
+										Sign up
+									</Link>
+									<Link
+										href="/login"
+										className="bg-primary text-primary-foreground hover:bg-primary/80 rounded-md border border-transparent bg-clip-padding px-6 py-1.5 text-sm font-medium whitespace-nowrap outline-none transition-all"
+									>
+										Login
+									</Link>
+								</>
+							) : (
+								<Link
+									href="/register"
+									className="rounded-md border border-transparent bg-clip-padding px-6 py-1.5 text-sm font-medium whitespace-nowrap outline transition-all"
+								>
+									Logout
+								</Link>
+							)}
 						</div>
 
 						{/* Mobile Menu Button */}

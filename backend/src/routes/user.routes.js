@@ -17,6 +17,6 @@ router.post(
 	asyncWrap(registerController),
 );
 router.post("/login", validateRequest(loginSchema), asyncWrap(loginController));
-router.get("/auth", protectRoute, authController);
+router.get("/auth/me", protectRoute, authController);
 
 module.exports = router;

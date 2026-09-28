@@ -36,7 +36,7 @@ const RegisterForm = () => {
 		e.preventDefault();
 		try {
 			await signup(signupData);
-			toast.success("User registered successfully");
+			toast.success("User registered successfully");			
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				toast.error(error?.response?.data?.message || "Something went wrong!");

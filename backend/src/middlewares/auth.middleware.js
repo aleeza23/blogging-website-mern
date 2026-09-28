@@ -4,13 +4,14 @@ const User = require("../models/user.model");
 const asyncWrap = require("../utils/asyncWrap.utils");
 
 const protectRoute = asyncWrap(async (req, res, next) => {
-	const { authorization } = req.headers;
+	const token = req.headers.cookie || req.cookies.token;
 
-	if (!authorization) {
+	console.log(req.headers.cookie, "tokens");
+
+	if (!token) {
 		throw new AppError(401, "Unauthorized: No Token Provided");
 	}
 
-	const token = authorization.split(" ")[1];
 	// decode token
 	const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

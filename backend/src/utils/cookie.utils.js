@@ -3,6 +3,7 @@ const setAuthCookie = (res, token) => {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
 		sameSite: "none",
+		secure: true
 	});
 };
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/shared/Navbar";
 import { Toaster } from "sonner";
+import AuthProvider from "@/context/authContext";
 
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -35,10 +36,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 				montserrat.variable,
 			)}
 		>
-			<body className="min-h-full flex flex-col">
-				<Navbar />
-				{children}
-				<Toaster richColors />
+			<body className="min-h-full flex flex-col" suppressHydrationWarning>
+				<AuthProvider>
+					<Navbar />
+					{children}
+					<Toaster richColors />
+				</AuthProvider>
 			</body>
 		</html>
 	);

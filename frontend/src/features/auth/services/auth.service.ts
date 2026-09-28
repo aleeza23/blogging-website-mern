@@ -10,3 +10,12 @@ export const login = async (data: Login) => {
 	const response = await api.post("/login", data);
 	return response.data;
 };
+
+export const getCurrentUser = async (authHeader?: string) => {
+	const response = await api.get("/auth/me", {
+		headers: {
+			cookie: authHeader,
+		},
+	});
+	return response.data;
+};
