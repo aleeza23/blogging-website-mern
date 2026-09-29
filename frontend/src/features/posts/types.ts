@@ -13,3 +13,7 @@ export interface Post {
 	tags: string[];
 	status: Status;
 }
+
+export type PostFormTypes = Omit<Post, "coverImage"> & {
+	coverImage: File[];
+};

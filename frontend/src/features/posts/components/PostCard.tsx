@@ -49,12 +49,10 @@ const PostCard = ({ post = dummyPost }) => {
 				)}
 			</div>
 
-			<CardContent>
-				<CardHeader className="px-0">
+				<CardHeader>
 					<CardTitle>{title}</CardTitle>
 					<CardDescription className="">{content}</CardDescription>
 				</CardHeader>
-			</CardContent>
 
 			<CardFooter className="flex items-center gap-3">
 				<Avatar className="h-7 w-7">

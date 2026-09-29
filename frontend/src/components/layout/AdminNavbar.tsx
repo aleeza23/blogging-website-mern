@@ -1,0 +1,22 @@
+import React from "react";
+import { SidebarTrigger } from "../ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { User } from "@/types";
+
+const AdminNavbar = ({ user }: { user: User }) => {
+	return (
+		<header className="flex h-16 shrink-0 items-center gap-2 justify-between px-4">
+			<SidebarTrigger />
+
+			<Avatar>
+				<AvatarImage src={user?.avatarUrl || "/avatar.avif"} alt="avatar" />
+				<AvatarFallback>
+					{user?.firstName?.[0]}
+					{user?.lastName?.[0]}
+				</AvatarFallback>
+			</Avatar>
+		</header>
+	);
+};
+
+export default AdminNavbar;

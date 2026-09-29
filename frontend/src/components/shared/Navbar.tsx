@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/authContext";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const navLinks = [
 	{ label: "How it works", href: "#how-it-works" },
@@ -70,12 +72,19 @@ const Navbar = () => {
 									</Link>
 								</>
 							) : (
-								<Link
-									href="/register"
-									className="rounded-md border border-transparent bg-clip-padding px-6 py-1.5 text-sm font-medium whitespace-nowrap outline transition-all"
-								>
-									Logout
-								</Link>
+								<>
+									<Avatar>
+										<AvatarImage
+											src={user?.avatarUrl || "/avatar.avif"}
+											alt="avatar"
+										/>
+										<AvatarFallback>
+											{user?.firstName?.[0]}
+											{user?.lastName?.[0]}
+										</AvatarFallback>
+									</Avatar>
+									<Button variant={"destructive"}>Logout</Button>
+								</>
 							)}
 						</div>
 

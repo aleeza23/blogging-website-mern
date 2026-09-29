@@ -20,7 +20,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const getUser = async () => {
 		try {
 			const result = await getCurrentUser();
-			setUser(result.data);
+			setUser(result.data);			
 		} catch (error) {
 			console.log(error);
 			setUser(null)

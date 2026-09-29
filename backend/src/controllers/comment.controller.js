@@ -44,7 +44,7 @@ const getComments = async (req, res) => {
 	const comments = await Comment.find({ post: postId }).populate(
 		"author",
 		"firstName lastName avatarUrl",
-	);
+	).populate("post", "title");
 
 	res.status(200).json({ success: true, data: comments });
 };
