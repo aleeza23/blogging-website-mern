@@ -25,6 +25,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 const PostForm = () => {
 	const [formData, setFormData] = useState<PostFormTypes>({
@@ -34,6 +35,7 @@ const PostForm = () => {
 		tags: [],
 		status: "draft",
 	});
+
 
 	return (
 		<form>
@@ -102,6 +104,10 @@ const PostForm = () => {
 							))}
 						</FileUploadList>
 					</FileUpload>
+				</div>
+
+				<div className="w-full col-span-2">
+					<SimpleEditor  />
 				</div>
 
 				<div className="grid gap-2 ms-auto col-span-2">

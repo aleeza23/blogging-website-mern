@@ -31,7 +31,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
 					<AdminNavbar user={user} />
 					<Separator />
 
-					<div className="py-6"><Container> {children} </Container></div>
+					<div className="py-6 h-full"><Container className="h-full"> {children} </Container></div>
 				</SidebarInset>
 			</SidebarProvider>
 		</>

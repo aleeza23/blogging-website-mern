@@ -4,9 +4,9 @@ const User = require("../models/user.model");
 const asyncWrap = require("../utils/asyncWrap.utils");
 
 const protectRoute = asyncWrap(async (req, res, next) => {
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YWFlYzRkZWFjNTdiN2RiMDNiMTRmMGUiLCJmaXJzdE5hbWUiOiJBbGVlemEiLCJsYXN0TmFtZSI6IlJ1YmFiIiwiZW1haWwiOiJhenNoZ2ZAZ21haWwuY29tIiwiaWF0IjoxNzkwNjU5MzY4LCJleHAiOjE3OTEyNjQxNjh9.7ku6HUOjUIH4M8Zs9z2ISoOHG-tC_DTtvb-NKCBFuQk" || req.headers.cookie;
+	const token = req.headers.cookie.split("; ")[1].split("=")[1] || req.headers.cookie;
 
-	// console.log(req.headers.cookie.split(";"), "tokens");
+	// console.log(req.headers.cookie.split("; ")[1].split("=")[1], "tokens");
 	// console.log(req.cookies.token, "browser tokens");
 
 	if (!token) {

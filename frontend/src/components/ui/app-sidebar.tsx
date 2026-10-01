@@ -62,7 +62,7 @@ const AppSidebar = ({ user }: { user: User }) => {
 	const pathname = usePathname();
 
 	return (
-		<Sidebar variant="inset" collapsible="icon">
+		<Sidebar  collapsible="icon">
 			{/* Header */}
 			<SidebarHeader>
 				<div className="flex h-12 items-center gap-2">
