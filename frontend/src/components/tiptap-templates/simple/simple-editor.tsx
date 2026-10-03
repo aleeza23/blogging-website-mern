@@ -204,7 +204,11 @@ const MobileToolbarContent = ({
 	</>
 );
 
-export function SimpleEditor() {
+export function SimpleEditor({
+	onChange,
+}: {
+	onChange: (html: string) => void;
+}) {
 	const isMobile = useIsBreakpoint();
 	const { height } = useWindowSize();
 	const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -255,9 +259,9 @@ export function SimpleEditor() {
 				onError: (error) => console.error("Upload failed:", error),
 			}),
 		],
-		content: "ghghf",
+		content: "",
 		onUpdate: ({ editor }) => {
-			console.log(editor.getHTML());
+			onChange(editor.getHTML());
 		},
 	});
 
@@ -292,7 +296,7 @@ export function SimpleEditor() {
 	}, [closeSearchAndReplace, isSearchAndReplaceOpen, openSearchAndReplace]);
 
 	return (
-		<div className="simple-editor-wrapper">
+		<div className="simple-editor-wrapper border-dashed border-2 rounded-md mt-2.5">
 			<EditorContext.Provider value={{ editor }}>
 				<Toolbar
 					ref={toolbarRef}
@@ -322,7 +326,7 @@ export function SimpleEditor() {
 				</Toolbar>
 
 				<SearchAndReplace
-					className="simple-editor-search-and-replace"
+					className="simple-editor-search-and-replace "
 					open={isSearchAndReplaceOpen}
 					onOpen={openSearchAndReplace}
 					onClose={closeSearchAndReplace}
@@ -332,7 +336,7 @@ export function SimpleEditor() {
 				<EditorContent
 					editor={editor}
 					role="presentation"
-					className="simple-editor-content"
+					className="px-6 pt-6"
 				/>
 			</EditorContext.Provider>
 		</div>

@@ -1,29 +1,10 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
-
-const dummyPost = {
-	title: "Does WordPress 7.1 Optimize Your Images?",
-	content:
-		"Short answer: not really and if you’ve read the release notes, you already know why. WordPress 7.1 shipped on August 19, 2026, and one of its headline features is client-side media processing: your browser now handles image compression and thumbnail generation before upload.",
-	slug: "does-wordpress-7-1-optimize-your-images",
-	coverImageUrl: "/blog-01.png",
-	tags: ["world of wordpress", "image optimization"],
-	author: {
-		name: "Bianca Rus",
-		avatar: "https://i.pravatar.cc/80?img=47",
-	},
-	status: "published",
-	createdAt: "2026-09-22T09:00:00.000Z",
-	updatedAt: "2026-09-22T09:00:00.000Z",
-};
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Post } from "../types";
+import Link from "next/link";
 
 const formatDate = (iso: string) =>
 	new Date(iso).toLocaleDateString("en-US", {
@@ -32,45 +13,83 @@ const formatDate = (iso: string) =>
 		year: "numeric",
 	});
 
-const PostCard = ({ post = dummyPost }) => {
-	const { title, content, coverImageUrl, tags, author, createdAt } = post;
+const PostCard = ({
+	post,
+	isAdmin = false,
+}: {
+	post: Post;
+	isAdmin?: boolean;
+}) => {
+	const { title, coverImageUrl, author, createdAt, slug } = post;
+	console.log(post);
 
 	return (
 		<Card className="ring-0 pt-0">
-			<div className="w-full h-full overflow-hidden">
+			<div className="group relative w-full h-45 overflow-hidden">
 				{coverImageUrl && (
 					<Image
 						src={coverImageUrl}
 						alt={title}
 						width={1000}
 						height={1000}
-						className="h-full w-full object-contain"
+						className="h-full w-full object-cover"
 					/>
+				)}
+
+				{coverImageUrl && isAdmin && (
+					<div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
+						<Button
+							type="button"
+							size="icon"
+							variant="secondary"
+							className="size-9"
+							render={<Link href={`/admin/posts/edit/${slug}`} />}
+						>
+							<Pencil className="size-4" />
+						</Button>
+
+						<Button
+							type="button"
+							size="icon"
+							variant="destructive"
+							className="size-9"
+						>
+							<Trash2 className="size-4" />
+						</Button>
+					</div>
 				)}
 			</div>
 
-				<CardHeader>
-					<CardTitle>{title}</CardTitle>
-					<CardDescription className="">{content}</CardDescription>
-				</CardHeader>
+			<CardHeader>
+				<CardTitle>
+					<Link
+						className="hover:text-primary transition-colors"
+						href={`/post/${post.slug}`}
+					>
+						{title}
+					</Link>
+				</CardTitle>
+			</CardHeader>
 
 			<CardFooter className="flex items-center gap-3">
 				<Avatar className="h-7 w-7">
-					<AvatarImage src={author?.avatar} alt={author?.name} />
+					<AvatarImage src={author?.avatarUrl} alt={author?.firstName} />
 					<AvatarFallback className="text-[10px] font-semibold">
-						{author.name}
+						{author?.firstName?.[0]}
 					</AvatarFallback>
 				</Avatar>
 
 				<span className="text-[12px] font-semibold uppercase tracking-[0.02em] text-slate-900">
-					{author?.name}
+					{author?.firstName}
 				</span>
 
 				<span className="text-[16px] font-light text-slate-500">/</span>
 
-				<span className="text-[12px] font-semibold uppercase tracking-[0.02em] text-slate-900">
-					{formatDate(createdAt)}
-				</span>
+				{createdAt && (
+					<span className="text-[12px] font-semibold uppercase tracking-[0.02em] text-slate-900">
+						{formatDate(createdAt)}
+					</span>
+				)}
 			</CardFooter>
 		</Card>
 	);

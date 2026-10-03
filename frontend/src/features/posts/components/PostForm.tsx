@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/file-upload";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PostFormTypes } from "../types";
 import {
 	Select,
@@ -26,19 +26,82 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { createPost, getPost } from "../services/post.services";
+import { json } from "node:stream/consumers";
+import { toast } from "sonner";
+import axios from "axios";
+import { uploadImage } from "@/services/upload.services";
 
-const PostForm = () => {
+type Props = {
+	mode?: "create" | "edit";
+	slug?: string;
+};
+const PostForm = ({ mode, slug }: Props) => {
 	const [formData, setFormData] = useState<PostFormTypes>({
 		title: "",
 		content: "",
-		coverImage: [],
-		tags: [],
+		coverImageUrl: [],
+		tags: "",
 		status: "draft",
 	});
 
+	console.log(slug, "params");
+
+	useEffect(() => {
+		const fetchPost = async () => {
+			if (mode === "edit") {
+				const result = await getPost(slug || "");
+				const data = result.data;
+				setFormData({
+					title: data.title,
+					content: data.content,
+					coverImageUrl: [],
+					tags: data.tags.join(","),
+					status: data.status,
+				})
+				console.log(data, "dd");
+			}
+		};
+		fetchPost();
+	}, []);
+
+	const [tags, setTags] = useState<string[]>([]);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setFormData((prev) => {
+			return { ...prev, [e.target.id]: e.target.value };
+		});
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const payload = {
+			title: formData.title,
+			content: formData.content,
+			tags: tags,
+			status: formData.status,
+			coverImageUrl: "",
+		};
+
+		try {
+			if (formData.coverImageUrl[0]) {
+				const result = await uploadImage(formData.coverImageUrl[0]);
+				payload.coverImageUrl = result.data.imageUrl;
+			}
+
+			const data = await createPost(payload);
+			console.log(data);
+			toast.success("Post created successfully");
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				toast.error(error?.response?.data?.message || "Something went wrong");
+			}
+		}
+	};
 
 	return (
-		<form>
+		<form onSubmit={handleSubmit}>
 			<div className="grid md:grid-cols-2 gap-4">
 				<div className="grid col-span-2 md:col-span-1 gap-2">
 					<Label htmlFor="title">Title</Label>
@@ -46,35 +109,55 @@ const PostForm = () => {
 						id="title"
 						type="title"
 						placeholder="Enter title..."
+						value={formData.title}
+						onChange={handleChange}
 						required
 					/>
 				</div>
 				<div className="grid col-span-2 md:col-span-1 gap-2">
 					<Label htmlFor="tags">Tags</Label>
 					<div className="flex  flex-wrap items-center gap-2 rounded-md border bg-background px-3 py-1">
-						<Badge>
-							Title
-							<Button
-								type="button"
-								size="icon-xs"
-								variant="ghost"
-								className="size-4 p-0 hover:text-white hover:bg-transparent"
-							>
-								<X className="size-3" />
-							</Button>
-						</Badge>
-
+						{tags.map((t) => {
+							return (
+								<Badge key={t}>
+									{t}
+									<Button
+										type="button"
+										size="icon-xs"
+										variant="ghost"
+										className="size-4 p-0 hover:text-white hover:bg-transparent"
+									>
+										<X className="size-3" />
+									</Button>
+								</Badge>
+							);
+						})}
 						<Input
 							id="tags"
 							type="text"
 							placeholder="Enter tags..."
+							value={formData.tags}
+							onChange={handleChange}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.code === "Space") {
+									setTags([...tags, formData.tags]);
+									setFormData((prev) => ({ ...prev, tags: "" }));
+								}
+							}}
+							required
 							className="h-7 min-w-20 flex-1 border-0 p-0 shadow-none focus-visible:ring-0"
 						/>
 					</div>
 				</div>
 
 				<div className="col-span-2">
-					<FileUpload value={formData.coverImage} maxFiles={1}>
+					<FileUpload
+						value={formData.coverImageUrl}
+						maxFiles={1}
+						onValueChange={(file) => {
+							setFormData((prev) => ({ ...prev, coverImageUrl: file }));
+						}}
+					>
 						<FileUploadDropzone>
 							<div className="flex flex-col items-center gap-1 text-center">
 								<div className="flex items-center justify-center rounded-full border p-2.5">
@@ -95,11 +178,18 @@ const PostForm = () => {
 							/>
 						</FileUploadDropzone>
 						<FileUploadList>
-							{formData.coverImage.map((file) => (
+							{formData.coverImageUrl.map((file) => (
 								<FileUploadItem key={file.name} value={file}>
 									<FileUploadItemPreview />
-									<FileUploadItemMetadata />
-									<FileUploadItemProgress />
+									<FileUploadItemMetadata>
+										<span className="truncate text-sm font-medium">
+											{file.name}
+										</span>
+										<span className="text-xs text-muted-foreground">
+											{Math.round(file.size / 1024)} KB
+										</span>
+									</FileUploadItemMetadata>
+									{/* <FileUploadItemProgress /> */}
 								</FileUploadItem>
 							))}
 						</FileUploadList>
@@ -107,12 +197,31 @@ const PostForm = () => {
 				</div>
 
 				<div className="w-full col-span-2">
-					<SimpleEditor  />
+					<Label htmlFor="content">Post Content</Label>
+
+					<SimpleEditor
+						onChange={(html) => {
+							setFormData((prev) => ({ ...prev, content: html }));
+						}}
+					/>
 				</div>
 
-				<div className="grid gap-2 ms-auto col-span-2">
+				<div className="grid gap-2 ms-auto col-span-2 mt-5.5">
 					{/* <Label htmlFor="status">Status</Label> */}
-					<Select>
+					<Select
+						id="status"
+						value={formData.status}
+						onValueChange={(value) => {
+							if (!value) return;
+
+							setFormData((prev) => {
+								return {
+									...prev,
+									status: value,
+								};
+							});
+						}}
+					>
 						<SelectTrigger id="status" className={"w-52"}>
 							<SelectValue placeholder="Select status..." />
 						</SelectTrigger>

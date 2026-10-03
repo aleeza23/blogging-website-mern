@@ -6,3 +6,4 @@ export interface User {
 	avatarUrl?: string;
 	bio?: string;
 }
+

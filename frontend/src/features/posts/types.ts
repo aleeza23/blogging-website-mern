@@ -1,3 +1,5 @@
+import { User } from "@/types";
+
 export interface PopularPost {
 	slug: string;
 	title: string;
@@ -9,11 +11,15 @@ type Status = "draft" | "published";
 export interface Post {
 	title: string;
 	content: string;
-	coverImage?: string;
+	coverImageUrl?: string;
 	tags: string[];
 	status: Status;
+	author?: User;
+	slug?: string;
+	createdAt?: string;
 }
 
-export type PostFormTypes = Omit<Post, "coverImage"> & {
-	coverImage: File[];
+export type PostFormTypes = Omit<Post, "coverImageUrl" | "tags"> & {
+	coverImageUrl: File[];
+	tags: string;
 };

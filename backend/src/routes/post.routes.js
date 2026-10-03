@@ -14,7 +14,7 @@ const upload = require("../middlewares/upload.middleware");
 const router = express.Router();
 
 router.post(
-	"/post",
+	"/posts",
 	protectRoute,
 	upload.single("image"),
 	validateRequest(postSchema),

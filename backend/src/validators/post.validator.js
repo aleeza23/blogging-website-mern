@@ -5,8 +5,7 @@ const postSchema = Joi.object({
 		"string.max": "Title cannot exceed {#limit} characters",
 		"any.required": "Title is required",
 	}),
-	content: Joi.string().trim().max(500).required().messages({
-		"string.max": "Content cannot exceed {#limit} characters",
+	content: Joi.string().trim().required().messages({
 		"any.required": "Content is required",
 	}),
 	coverImageUrl: Joi.string().optional().default(""),
