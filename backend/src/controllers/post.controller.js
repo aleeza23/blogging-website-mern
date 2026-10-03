@@ -45,11 +45,11 @@ const getPostController = async (req, res) => {
 
 // delete post
 const deletePostController = async (req, res) => {
-	const { id } = req.params;
+	const { slug } = req.params;
 	// first check the user if same user the one who created the post
 	// find post with id get author of that post match it with the user logged in that is in protected middleware
 
-	const post = await Post.findById(id);
+	const post = await Post.findOne({ slug });
 	if (post.author.toString() !== req.user.id) {
 		throw new AppError(401, "Unauthorized: Cannot delete post");
 	}
@@ -61,9 +61,9 @@ const deletePostController = async (req, res) => {
 
 // update post
 const updatePostController = async (req, res) => {
-	const { id } = req.params;
+	const { slug } = req.params;
 
-	const post = await Post.findById(id);
+	const post = await Post.findOne({ slug });
 	if (!post) {
 		throw new AppError(404, "Post not found");
 	}

@@ -206,8 +206,10 @@ const MobileToolbarContent = ({
 
 export function SimpleEditor({
 	onChange,
+	initialContent = "",
 }: {
 	onChange: (html: string) => void;
+	initialContent?: string;
 }) {
 	const isMobile = useIsBreakpoint();
 	const { height } = useWindowSize();
@@ -259,7 +261,7 @@ export function SimpleEditor({
 				onError: (error) => console.error("Upload failed:", error),
 			}),
 		],
-		content: "",
+		content: initialContent || "",
 		onUpdate: ({ editor }) => {
 			onChange(editor.getHTML());
 		},

@@ -21,7 +21,7 @@ const AddPost = async () => {
 
 			<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{posts.map((post: Post) => {
-					return <PostCard post={post} isAdmin />;
+					return <PostCard post={post} isAdmin key={post.slug} />;
 				})}
 			</div>
 		</>

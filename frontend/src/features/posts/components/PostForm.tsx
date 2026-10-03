@@ -26,11 +26,12 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
-import { createPost, getPost } from "../services/post.services";
+import { createPost, getPost, updatePost } from "../services/post.services";
 import { json } from "node:stream/consumers";
 import { toast } from "sonner";
 import axios from "axios";
 import { uploadImage } from "@/services/upload.services";
+import { useRouter } from "next/navigation";
 
 type Props = {
 	mode?: "create" | "edit";
@@ -44,28 +45,38 @@ const PostForm = ({ mode, slug }: Props) => {
 		tags: "",
 		status: "draft",
 	});
-
-	console.log(slug, "params");
+	const [tags, setTags] = useState<string[]>([]);
+	const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+	const [loading, setLoading] = useState(mode === "edit");
+	const router = useRouter();
+	// console.log(slug, "params");
 
 	useEffect(() => {
+		if (mode !== "edit" || !slug) return;
+
 		const fetchPost = async () => {
-			if (mode === "edit") {
+			try {
 				const result = await getPost(slug || "");
 				const data = result.data;
 				setFormData({
 					title: data.title,
 					content: data.content,
 					coverImageUrl: [],
-					tags: data.tags.join(","),
+					tags: "",
 					status: data.status,
-				})
-				console.log(data, "dd");
+				});
+				setTags(data.tags || []);
+				setExistingImageUrl(data.coverImageUrl || null);
+			} catch (error) {
+				if (axios.isAxiosError(error)) {
+					toast.error(error?.response?.data?.message || "Something went wrong");
+				}
+			} finally {
+				setLoading(false);
 			}
 		};
 		fetchPost();
-	}, []);
-
-	const [tags, setTags] = useState<string[]>([]);
+	}, [mode, slug]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData((prev) => {
@@ -76,23 +87,30 @@ const PostForm = ({ mode, slug }: Props) => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		const payload = {
-			title: formData.title,
-			content: formData.content,
-			tags: tags,
-			status: formData.status,
-			coverImageUrl: "",
-		};
-
 		try {
+			let coverImageUrl = existingImageUrl ?? "";
 			if (formData.coverImageUrl[0]) {
 				const result = await uploadImage(formData.coverImageUrl[0]);
-				payload.coverImageUrl = result.data.imageUrl;
+				coverImageUrl = result.data.imageUrl;
 			}
 
-			const data = await createPost(payload);
-			console.log(data);
-			toast.success("Post created successfully");
+			const payload = {
+				title: formData.title,
+				content: formData.content,
+				tags: tags,
+				status: formData.status,
+				coverImageUrl,
+			};
+
+			if (mode === "edit") {
+				await updatePost(slug || "", payload);
+				toast.success("Post updated successfully");
+			} else {
+				await createPost(payload);
+				toast.success("Post created successfully");
+			}
+
+			router.push("/admin/posts");
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				toast.error(error?.response?.data?.message || "Something went wrong");
@@ -100,6 +118,7 @@ const PostForm = ({ mode, slug }: Props) => {
 		}
 	};
 
+	if (loading) return <p>Loading...</p>;
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className="grid md:grid-cols-2 gap-4">
@@ -144,7 +163,6 @@ const PostForm = ({ mode, slug }: Props) => {
 									setFormData((prev) => ({ ...prev, tags: "" }));
 								}
 							}}
-							required
 							className="h-7 min-w-20 flex-1 border-0 p-0 shadow-none focus-visible:ring-0"
 						/>
 					</div>
@@ -200,6 +218,7 @@ const PostForm = ({ mode, slug }: Props) => {
 					<Label htmlFor="content">Post Content</Label>
 
 					<SimpleEditor
+						initialContent={formData.content}
 						onChange={(html) => {
 							setFormData((prev) => ({ ...prev, content: html }));
 						}}

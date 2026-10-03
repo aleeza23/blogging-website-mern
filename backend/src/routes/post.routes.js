@@ -22,7 +22,7 @@ router.post(
 );
 router.get("/posts", asyncWrap(getPostsController));
 router.get("/posts/:slug", asyncWrap(getPostController));
-router.delete("/posts/:id", protectRoute, asyncWrap(deletePostController));
-router.patch("/posts/:id", protectRoute, asyncWrap(updatePostController));
+router.delete("/posts/:slug", protectRoute, asyncWrap(deletePostController));
+router.patch("/posts/:slug", protectRoute, asyncWrap(updatePostController));
 
 module.exports = router;
