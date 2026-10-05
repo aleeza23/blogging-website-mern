@@ -11,8 +11,8 @@ export const updatePost = async (id: string, data: Partial<Post>) => {
 	return response.data;
 };
 
-export const deletePost = async (id: string) => {
-	const response = await api.delete(`/posts/${id}`);
+export const deletePost = async (slug: string) => {
+	const response = await api.delete(`/posts/${slug}`);
 	return response.data;
 };
 

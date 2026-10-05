@@ -5,7 +5,7 @@ const EditPost = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const { slug } = await params;
 	return (
 		<>
-			<h2 className="text-xl font-medium mb-6">Update post</h2>
+			<h2 className="text-xl font-bold mb-6">Update post</h2>
 			<PostForm mode="edit" slug={slug} />
 		</>
 	);

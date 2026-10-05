@@ -4,6 +4,7 @@ const {
 	createCommentController,
 	deleteComment,
 	getComments,
+	getPostComments,
 } = require("../controllers/comment.controller");
 const protectRoute = require("../middlewares/auth.middleware");
 const validateRequest = require("../middlewares/validate.middleware");
@@ -17,6 +18,7 @@ router.post(
 	asyncWrap(createCommentController),
 );
 router.delete("/comment/:commentId", protectRoute, asyncWrap(deleteComment));
-router.get("/comment/:postId", asyncWrap(getComments));
+router.get("/comment", asyncWrap(getComments));
+router.get("/comment/:postId", asyncWrap(getPostComments));
 
 module.exports = router;

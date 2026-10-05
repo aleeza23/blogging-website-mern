@@ -38,15 +38,28 @@ const deleteComment = async (req, res) => {
 		.json({ success: true, message: "Comment deleted successfully" });
 };
 
-const getComments = async (req, res) => {
+const getPostComments = async (req, res) => {
 	const { postId } = req.params;
 
-	const comments = await Comment.find({ post: postId }).populate(
-		"author",
-		"firstName lastName avatarUrl",
-	).populate("post", "title");
+	const comments = await Comment.find({ post: postId })
+		.populate("author", "firstName lastName avatarUrl")
+		.populate("post", "title");
 
 	res.status(200).json({ success: true, data: comments });
 };
 
-module.exports = { createCommentController, deleteComment, getComments };
+const getComments = async (req, res) => {
+	const comments = await Comment.find()
+		.populate("author", "firstName lastName avatarUrl")
+		.populate("post", "title")
+		.sort({ createdAt: -1 });
+		
+	res.status(200).json({ success: true, data: comments });
+};
+
+module.exports = {
+	createCommentController,
+	deleteComment,
+	getPostComments,
+	getComments,
+};

@@ -16,7 +16,8 @@ export interface Post {
 	status: Status;
 	author?: User;
 	slug?: string;
-	createdAt?: string;
+	_id?: string;
+	createdAt?: Date;
 }
 
 export type PostFormTypes = Omit<Post, "coverImageUrl" | "tags"> & {

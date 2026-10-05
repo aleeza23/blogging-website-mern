@@ -32,6 +32,8 @@ import { toast } from "sonner";
 import axios from "axios";
 import { uploadImage } from "@/services/upload.services";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Loader from "@/components/shared/Loader";
 
 type Props = {
 	mode?: "create" | "edit";
@@ -49,7 +51,6 @@ const PostForm = ({ mode, slug }: Props) => {
 	const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
 	const [loading, setLoading] = useState(mode === "edit");
 	const router = useRouter();
-	// console.log(slug, "params");
 
 	useEffect(() => {
 		if (mode !== "edit" || !slug) return;
@@ -67,6 +68,7 @@ const PostForm = ({ mode, slug }: Props) => {
 				});
 				setTags(data.tags || []);
 				setExistingImageUrl(data.coverImageUrl || null);
+				console.log(data, "data");
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
 					toast.error(error?.response?.data?.message || "Something went wrong");
@@ -77,6 +79,8 @@ const PostForm = ({ mode, slug }: Props) => {
 		};
 		fetchPost();
 	}, [mode, slug]);
+
+	// console.log(existingImageUrl, "params");
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData((prev) => {
@@ -118,7 +122,12 @@ const PostForm = ({ mode, slug }: Props) => {
 		}
 	};
 
-	if (loading) return <p>Loading...</p>;
+	if (loading)
+		return (
+			<div className="flex justify-center items-center h-full">
+				<Loader />
+			</div>
+		);
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className="grid md:grid-cols-2 gap-4">
@@ -174,6 +183,7 @@ const PostForm = ({ mode, slug }: Props) => {
 						maxFiles={1}
 						onValueChange={(file) => {
 							setFormData((prev) => ({ ...prev, coverImageUrl: file }));
+							setExistingImageUrl(null);
 						}}
 					>
 						<FileUploadDropzone>
@@ -195,9 +205,38 @@ const PostForm = ({ mode, slug }: Props) => {
 								}
 							/>
 						</FileUploadDropzone>
+						{existingImageUrl && (
+							<div className="relative flex items-center gap-2.5 rounded-md border p-3">
+								<div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-accent/50">
+									<Image
+										src={existingImageUrl}
+										alt="Current cover"
+										width={40}
+										height={40}
+										className="size-full object-cover"
+									/>
+								</div>
+								<div className="flex min-w-0 flex-1 flex-col">
+									<span className="truncate text-sm font-medium">
+										Current cover image
+									</span>
+									<span className="text-xs text-muted-foreground">
+										Upload a new one to replace it
+									</span>
+								</div>
+								<Button
+									type="button"
+									size="icon"
+									variant="ghost"
+									onClick={() => setExistingImageUrl(null)}
+								>
+									<X className="size-4" />
+								</Button>
+							</div>
+						)}
 						<FileUploadList>
-							{formData.coverImageUrl.map((file) => (
-								<FileUploadItem key={file.name} value={file}>
+							{formData.coverImageUrl.map((file, index) => (
+								<FileUploadItem key={index} value={file}>
 									<FileUploadItemPreview />
 									<FileUploadItemMetadata>
 										<span className="truncate text-sm font-medium">

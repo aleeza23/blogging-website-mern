@@ -11,13 +11,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Eye, Trash } from "lucide-react";
 import CommentModal from "../modal/CommentModal";
+import { Comment } from "../types";
+import { formatDate } from "@/lib/date";
+import { deleteComment } from "../services/comments.services";
+import axios from "axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const CommentTable = () => {
+const CommentTable = ({ comments }: { comments: Comment[] }) => {
 	const [openModal, setOpenModal] = useState<boolean>(false);
+	const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+	const router = useRouter();
 
-	const handleOpenModal = () => {
+	const handleOpenModal = (comment: Comment) => {
+		setSelectedComment(comment);
 		setOpenModal(true);
 	};
+
+	const handleDeleteComment = async (commentId: string) => {
+		try {
+			await deleteComment(commentId);
+			toast.success("Comment deleted successfully");
+			router.refresh();
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				toast.error(error.request.data.message || "Failed to delete comment");
+			} else {
+				toast.error("Something went wrong");
+			}
+		}
+	};
+
 	return (
 		<>
 			<Table>
@@ -32,33 +56,48 @@ const CommentTable = () => {
 				</TableHeader>
 
 				<TableBody>
-					<TableRow>
-						<TableCell className="truncate max-w-20">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga
-							nobis inventore animi enim delectus similique dicta ipsam,
-							suscipit quas voluptates quia totam error est quis nesciunt,
-							placeat officia temporibus ratione amet repudiandae distinctio
-							numquam eum.
-						</TableCell>
-						<TableCell className="truncate max-w-20">title</TableCell>
-						<TableCell>Aleeza</TableCell>
-						<TableCell>12-09/2026</TableCell>
-						<TableCell className="flex gap-2">
-							<Button
-								size={"icon-xs"}
-								variant={"outline"}
-								onClick={handleOpenModal}
-							>
-								<Eye />
-							</Button>
-							<Button size={"icon-xs"} variant={"destructive"}>
-								<Trash />
-							</Button>
-						</TableCell>
-					</TableRow>
+					{comments.map((comment) => (
+						<TableRow key={comment?._id}>
+							<TableCell className="max-w-20 truncate">
+								{comment?.comment}
+							</TableCell>
+
+							<TableCell className="max-w-40 truncate">
+								{comment?.post?.title}
+							</TableCell>
+
+							<TableCell>
+								{comment?.author?.firstName} {comment?.author?.lastName}
+							</TableCell>
+
+							<TableCell>{formatDate(comment?.createdAt)}</TableCell>
+
+							<TableCell className="flex gap-2">
+								<Button
+									size="icon-xs"
+									variant="outline"
+									onClick={() => handleOpenModal(comment)}
+								>
+									<Eye />
+								</Button>
+
+								<Button
+									size="icon-xs"
+									variant="destructive"
+									onClick={() => handleDeleteComment(comment._id)}
+								>
+									<Trash />
+								</Button>
+							</TableCell>
+						</TableRow>
+					))}
 				</TableBody>
 			</Table>
-			<CommentModal open={openModal} onOpenChange={setOpenModal} />
+			<CommentModal
+				open={openModal}
+				onOpenChange={setOpenModal}
+				comment={selectedComment}
+			/>
 		</>
 	);
 };
