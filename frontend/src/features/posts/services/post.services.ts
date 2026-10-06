@@ -21,7 +21,7 @@ export const getPost = async (slug: string) => {
 	return response.data;
 };
 
-export const getPosts = async () => {
-	const response = await api.get("/posts");
+export const getPosts = async (page?: Number, limit?: Number) => {
+	const response = await api.get(`/posts?page=${page}&limit=${limit}`);
 	return response.data;
 };

@@ -12,9 +12,17 @@ import { getPosts } from "@/features/posts/services/post.services";
 import { Post } from "@/features/posts/types";
 import PostPagination from "@/features/posts/components/Pagination";
 
-export default async function Home() {
-	const data = await getPosts();
-	
+export default async function Home({
+	searchParams,
+}: {
+	searchParams: Promise<{ page: string }>;
+}) {
+	const params = await searchParams;
+	const page = Number(params.page) || 1;
+	const limit = 2;
+
+	const data = await getPosts(page, limit);
+
 	return (
 		<Container className="grid lg:grid-cols-3 gap-10 items-start pt-32">
 			<div className="lg:col-span-2 space-y-8">
@@ -22,7 +30,9 @@ export default async function Home() {
 					{data?.data.length === 0 ? (
 						<p className="text-muted-foreground">No posts yet.</p>
 					) : (
-						data?.data.map((post: Post) => <PostCard key={post.slug} post={post} />)
+						data?.data.map((post: Post) => (
+							<PostCard key={post.slug} post={post} />
+						))
 					)}
 				</div>
 				<PostPagination pagination={data?.pagination} />

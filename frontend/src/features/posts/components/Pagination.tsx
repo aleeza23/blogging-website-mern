@@ -1,45 +1,44 @@
-"use client"
-import React, { useState } from 'react'
+"use client";
+import React, { useState } from "react";
 import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
+	Pagination,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const PostPagination = ({ pagination }: { pagination: any }) => {
-    console.log(pagination, 'page');
+	const { totalPages, currentPage } = pagination;
 
-    return (
+	return (
+		<Pagination className="w-full">
+			<PaginationContent>
+				<PaginationItem>
+					<PaginationPrevious href={`?page=${currentPage - 1}`} />
+				</PaginationItem>
+				{Array.from({ length: totalPages }, (_, i) => {
+					return i + 1;
+				}).map((page) => {
+					return (
+						<PaginationItem>
+							<PaginationLink
+								isActive={page === currentPage}
+								href={`?page=${page}`}
+							>
+								{page}
+							</PaginationLink>
+						</PaginationItem>
+					);
+				})}
+				<PaginationItem>
+					<PaginationNext href={`?page=${currentPage + 1}`} />
+				</PaginationItem>
+			</PaginationContent>
+		</Pagination>
+	);
+};
 
-        <Pagination className='w-full'>
-            <PaginationContent>
-                <PaginationItem>
-                    <PaginationPrevious href="#" />
-                </PaginationItem>
-                {Array.from({ length: pagination?.totalPages }, (_, i) => {
-                    return i + 1
-                }).map((page) => {
-                    return (
-                        <PaginationItem>
-                            <PaginationLink href="#">{page}</PaginationLink>
-                        </PaginationItem>
-
-                    )
-                })}
-                <PaginationItem>
-                    <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationNext href="#" />
-                </PaginationItem>
-            </PaginationContent>
-        </Pagination>
-    )
-}
-
-
-export default PostPagination
+export default PostPagination;
