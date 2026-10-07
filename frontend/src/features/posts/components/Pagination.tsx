@@ -17,13 +17,19 @@ const PostPagination = ({ pagination }: { pagination: any }) => {
 		<Pagination className="w-full">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationPrevious href={`?page=${currentPage - 1}`} />
+					<PaginationPrevious
+						aria-disabled={currentPage === 1}
+						href={`?page=${currentPage - 1}`}
+						className={
+							currentPage === 1 ? "pointer-events-none opacity-50" : undefined
+						}
+					/>
 				</PaginationItem>
 				{Array.from({ length: totalPages }, (_, i) => {
 					return i + 1;
 				}).map((page) => {
 					return (
-						<PaginationItem>
+						<PaginationItem key={page}>
 							<PaginationLink
 								isActive={page === currentPage}
 								href={`?page=${page}`}
@@ -34,7 +40,15 @@ const PostPagination = ({ pagination }: { pagination: any }) => {
 					);
 				})}
 				<PaginationItem>
-					<PaginationNext href={`?page=${currentPage + 1}`} />
+					<PaginationNext
+						aria-disabled={currentPage === totalPages}
+						href={`?page=${currentPage + 1}`}
+						className={
+							currentPage === totalPages
+								? "pointer-events-none opacity-50"
+								: undefined
+						}
+					/>
 				</PaginationItem>
 			</PaginationContent>
 		</Pagination>

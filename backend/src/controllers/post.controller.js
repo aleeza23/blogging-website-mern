@@ -7,8 +7,6 @@ const uploadToCloudinary = require("../utils/uploadToCloudinary.utils");
 const createPostController = async (req, res) => {
 	const { title, content, tags, status, coverImageUrl } = req.body;
 
-
-
 	if (!title || !content) {
 		throw new AppError(400, "Title or content is missing");
 	}
@@ -116,10 +114,41 @@ const getPostsController = async (req, res) => {
 	});
 };
 
+const getUserPosts = async (req, res) => {
+	const { status } = req.query;
+	const userId = req.user._id;
+	const page = Math.max(parseInt(req.query.page) || 1, 1);
+	const limit = Math.min(parseInt(req.query.limit) || 10, 30);
+	const skip = (page - 1) * limit;
+
+	let filters = { status, author: userId };
+
+	const [posts, totalPosts] = await Promise.all([
+		Post.find(filters)
+			.skip(skip)
+			.limit(limit)
+			.populate("author", "firstName lastName avatarUrl")
+			.sort({ createdAt: -1 }),
+
+		Post.countDocuments(filters),
+	]);
+
+	res.status(200).json({
+		success: true,
+		data: posts,
+		pagination: {
+			total: totalPosts,
+			currentPage: page,
+			totalPages: Math.ceil(totalPosts / limit),
+		},
+	});
+};
+
 module.exports = {
 	createPostController,
 	getPostController,
 	deletePostController,
 	updatePostController,
 	getPostsController,
+	getUserPosts,
 };

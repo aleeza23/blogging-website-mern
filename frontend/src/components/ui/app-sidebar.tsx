@@ -9,6 +9,7 @@ import {
 	Settings,
 	LogOut,
 	MoreVertical,
+	Edit,
 } from "lucide-react";
 
 import {
@@ -33,7 +34,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { User } from "@/types";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import axios from "axios";
+import { useAuth } from "@/context/authContext";
+import { logout } from "@/features/auth/services/auth.service";
 
 const navItems = [
 	{
@@ -42,27 +47,48 @@ const navItems = [
 		icon: LayoutDashboard,
 	},
 	{
-		title: "Posts",
+		title: "Published Posts",
 		href: "/admin/posts",
 		icon: FileText,
+	},
+	{
+		title: "Draft Posts",
+		href: "/admin/draft",
+		icon: Edit,
 	},
 	{
 		title: "Comments",
 		href: "/admin/comments",
 		icon: MessageSquare,
 	},
-	{
-		title: "Users",
-		href: "/admin/users",
-		icon: Users,
-	},
+	// {
+	// 	title: "Users",
+	// 	href: "/admin/users",
+	// 	icon: Users,
+	// },
 ];
 
 const AppSidebar = ({ user }: { user: User }) => {
 	const pathname = usePathname();
+	const router = useRouter();
+
+	const handleLogout = async () => {
+		try {
+			await logout();
+			toast.success("Logout successfully");
+			router.replace("/");
+			router.refresh();
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				toast.error(error.response?.data.message || "Failed to logout");
+			} else {
+				toast.error("Something went wrong");
+			}
+		}
+	};
 
 	return (
-		<Sidebar  collapsible="icon">
+		<Sidebar collapsible="icon">
 			{/* Header */}
 			<SidebarHeader>
 				<div className="flex h-12 items-center gap-2">
@@ -143,23 +169,16 @@ const AppSidebar = ({ user }: { user: User }) => {
 
 						<DropdownMenu>
 							<DropdownMenuTrigger>
-								<button
-									type="button"
+								<span
 									className="flex size-8 group-data-[collapsible=icon]:hidden shrink-0 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
 								>
 									<MoreVertical className="size-4" />
 									<span className="sr-only">Open user menu</span>
-								</button>
+								</span>
 							</DropdownMenuTrigger>
 
 							<DropdownMenuContent align="end" side="right">
-								<DropdownMenuItem>
-									<Settings />
-
-									<Link href="/admin/profile">Profile</Link>
-								</DropdownMenuItem>
-
-								<DropdownMenuItem variant="destructive">
+								<DropdownMenuItem variant="destructive" onClick={handleLogout}>
 									<LogOut />
 									Logout
 								</DropdownMenuItem>

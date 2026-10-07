@@ -1,13 +1,12 @@
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import PostPagination from "@/features/posts/components/Pagination";
 import PostCard from "@/features/posts/components/PostCard";
 import { getPosts } from "@/features/posts/services/post.services";
 import { getUserPosts } from "@/features/posts/services/post.services.server";
 import { Post } from "@/features/posts/types";
-import { cn } from "cn";
 import Link from "next/link";
 
-const PublishedPosts = async ({
+const DraftPosts = async ({
 	searchParams,
 }: {
 	searchParams: Promise<{ page?: string }>;
@@ -15,7 +14,7 @@ const PublishedPosts = async ({
 	const params = await searchParams;
 	const page = Number(params.page) || 1;
 	const limit = 6;
-	const status = "published";
+	const status = "draft";
 	const data = await getUserPosts(page, limit, status);
 
 	const posts = data.data;
@@ -23,13 +22,7 @@ const PublishedPosts = async ({
 	return (
 		<>
 			<div className="flex flex-wrap justify-between gap-2.5">
-				<h2 className="text-xl font-bold mb-6">Posts</h2>
-				<Link
-					href="/admin/posts/add"
-					className={cn(buttonVariants({ variant: "default" }))}
-				>
-					Create new post
-				</Link>
+				<h2 className="text-xl font-bold mb-6">Draft Posts</h2>
 			</div>
 
 			<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -39,7 +32,7 @@ const PublishedPosts = async ({
 			</div>
 
 			{posts.length === 0 && (
-				<p className="text-center my-12">Create your first post</p>
+				<p className="text-center my-12">No post in draft</p>
 			)}
 
 			{posts.length !== 0 && <PostPagination pagination={data?.pagination} />}
@@ -47,4 +40,4 @@ const PublishedPosts = async ({
 	);
 };
 
-export default PublishedPosts;
+export default DraftPosts;

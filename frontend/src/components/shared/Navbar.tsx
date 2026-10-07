@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/authContext";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { toast } from "sonner";
+import axios from "axios";
 
 const navLinks = [
 	{ label: "How it works", href: "#how-it-works" },
@@ -15,14 +17,26 @@ const navLinks = [
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
-	const { user } = useAuth();
-	console.log(user);
+	const { user, logout } = useAuth();
 
 	const closeMenu = () => setIsOpen(false);
 
+	const handleLogout = async () => {
+		try {
+			await logout();
+			toast.success("Logout successfully");
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				toast.error(error.response?.data.message || "Failed to logout");
+			} else {
+				toast.error("Something went wrong");
+			}
+		}
+	};
+
 	return (
 		<>
-			<header className="fixed inset-x-0 top-0 z-30 w-11/12 max-w-6xl mx-auto border border-gray-100 bg-white/80 py-3 shadow backdrop-blur-lg md:top-6 md:rounded-3xl">
+			<header className="fixed inset-x-0  z-30 w-11/12 max-w-6xl mx-auto border border-gray-100 bg-white/80 py-2 md:py-3 shadow backdrop-blur-lg top-6 rounded-3xl">
 				<div className="px-4">
 					<div className="flex items-center justify-between">
 						{/* Logo */}
@@ -73,6 +87,18 @@ const Navbar = () => {
 								</>
 							) : (
 								<>
+									<Button
+										variant="outline"
+										nativeButton={false}
+										render={<Link href="/admin/dashboard" />}
+									>
+										<LayoutDashboard className="size-4" />
+										Dashboard
+									</Button>
+
+									<Button variant={"destructive"} onClick={handleLogout}>
+										Logout
+									</Button>
 									<Avatar>
 										<AvatarImage
 											src={user?.avatarUrl || "/avatar.avif"}
@@ -83,7 +109,6 @@ const Navbar = () => {
 											{user?.lastName?.[0]}
 										</AvatarFallback>
 									</Avatar>
-									<Button variant={"destructive"}>Logout</Button>
 								</>
 							)}
 						</div>
@@ -160,21 +185,44 @@ const Navbar = () => {
 
 					{/* Mobile Actions */}
 					<div className="mt-auto flex flex-col gap-3 border-t p-5">
-						<Link
-							href="/login"
-							onClick={closeMenu}
-							className="rounded-md border border-transparent bg-clip-padding px-6 py-2.5 text-center text-sm font-medium whitespace-nowrap outline transition-all"
-						>
-							Sign in
-						</Link>
-
-						<Link
-							href="/login"
-							onClick={closeMenu}
-							className="bg-primary text-primary-foreground hover:bg-primary/80 rounded-md border border-transparent bg-clip-padding px-6 py-2.5 text-center text-sm font-medium whitespace-nowrap outline-none transition-all"
-						>
-							Login
-						</Link>
+						{!user ? (
+							<>
+								<Link
+									href="/register"
+									onClick={closeMenu}
+									className="rounded-md px-6 py-2.5 text-center text-sm font-medium outline"
+								>
+									Sign up
+								</Link>
+								<Link
+									href="/login"
+									onClick={closeMenu}
+									className="bg-primary text-primary-foreground rounded-md px-6 py-2.5 text-center text-sm font-medium"
+								>
+									Login
+								</Link>
+							</>
+						) : (
+							<>
+								<Button
+									variant="outline"
+									render={<Link href="/admin/dashboard" />}
+									nativeButton={false}
+								>
+									<LayoutDashboard className="size-4" />
+									Dashboard
+								</Button>
+								<Button
+									variant="destructive"
+									onClick={() => {
+										closeMenu();
+										handleLogout();
+									}}
+								>
+									Logout
+								</Button>
+							</>
+						)}
 					</div>
 				</div>
 			</aside>

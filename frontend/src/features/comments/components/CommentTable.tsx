@@ -93,6 +93,10 @@ const CommentTable = ({ comments }: { comments: Comment[] }) => {
 					))}
 				</TableBody>
 			</Table>
+			{comments.length === 0 && (
+				<p className="mt-12 text-center">No comment found</p>
+			)}
+
 			<CommentModal
 				open={openModal}
 				onOpenChange={setOpenModal}

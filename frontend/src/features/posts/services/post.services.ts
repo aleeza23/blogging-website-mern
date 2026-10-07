@@ -1,5 +1,6 @@
 import api from "@/lib/axios";
 import { Post } from "../types";
+import { getAuthHeader } from "@/lib/auth";
 
 export const createPost = async (data: Post) => {
 	const response = await api.post("/posts", data);
@@ -25,3 +26,4 @@ export const getPosts = async (page?: Number, limit?: Number) => {
 	const response = await api.get(`/posts?page=${page}&limit=${limit}`);
 	return response.data;
 };
+

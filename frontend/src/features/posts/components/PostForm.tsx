@@ -59,6 +59,8 @@ const PostForm = ({ mode, slug }: Props) => {
 			try {
 				const result = await getPost(slug || "");
 				const data = result.data;
+				console.log(data, 'post data');
+				
 				setFormData({
 					title: data.title,
 					content: data.content,

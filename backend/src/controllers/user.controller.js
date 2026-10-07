@@ -61,8 +61,16 @@ const loginController = async (req, res) => {
 	});
 };
 
+const logoutController = (req, res) => {
+	res.clearCookie("token");
+	res.status(200).json({
+		success: true,
+		message: "Logged out successfully",
+	});
+};
+
 const authController = (req, res) => {
 	res.status(200).send({ success: true, data: req.user });
 };
 
-module.exports = { registerController, loginController, authController };
+module.exports = { registerController, loginController, authController, logoutController };

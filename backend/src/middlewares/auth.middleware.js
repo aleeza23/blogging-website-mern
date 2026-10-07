@@ -4,7 +4,7 @@ const User = require("../models/user.model");
 const asyncWrap = require("../utils/asyncWrap.utils");
 
 const protectRoute = asyncWrap(async (req, res, next) => {
-	const token = req.headers.cookie.split("; ")[1].split("=")[1] || req.headers.cookie;
+	const token = req.cookies.token;
 
 	// console.log(req.headers.cookie.split("; ")[1].split("=")[1], "tokens");
 	// console.log(req.cookies.token, "browser tokens");

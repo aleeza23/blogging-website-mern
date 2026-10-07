@@ -7,7 +7,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getUser } from "@/lib/auth";
+import { getUser } from "@/features/auth/services/auth.services.server";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -17,7 +17,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
 	const SIDEBAR_WIDTH = "15rem";
 	const SIDEBAR_WIDTH_ICON = "2rem";
 
-	if (!user || user?.email !== "azshgf@gmail.com") {
+	if (!user) {
 		redirect("/");
 	}
 

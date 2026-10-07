@@ -48,8 +48,8 @@ const getPostComments = async (req, res) => {
 	res.status(200).json({ success: true, data: comments });
 };
 
-const getComments = async (req, res) => {
-	const comments = await Comment.find()
+const getUserComments = async (req, res) => {
+	const comments = await Comment.find({author: req.user._id})
 		.populate("author", "firstName lastName avatarUrl")
 		.populate("post", "title")
 		.sort({ createdAt: -1 });
@@ -61,5 +61,5 @@ module.exports = {
 	createCommentController,
 	deleteComment,
 	getPostComments,
-	getComments,
+	getUserComments,
 };

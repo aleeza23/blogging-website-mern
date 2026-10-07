@@ -111,13 +111,16 @@ const PostCard = ({
 				)}
 
 				<h3 className="line-clamp-2 text-lg font-semibold leading-snug tracking-tight text-foreground">
-					{/* after:absolute makes the whole card clickable */}
-					<Link
-						href={`/post/${slug}`}
-						className="transition-colors group-hover:text-primary after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
-					>
-						{title}
-					</Link>
+					{isAdmin ? (
+						<span>{title}</span>
+					) : (
+						<Link
+							href={`/post/${slug}`}
+							className="transition-colors group-hover:text-primary after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+						>
+							{title}
+						</Link>
+					)}
 				</h3>
 			</CardContent>
 
@@ -136,9 +139,7 @@ const PostCard = ({
 				</div>
 
 				{createdAt && (
-					<time
-						className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground"
-					>
+					<time className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
 						<CalendarDays className="size-3.5" />
 						{formatDate(createdAt)}
 					</time>

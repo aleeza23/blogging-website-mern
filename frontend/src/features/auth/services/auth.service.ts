@@ -11,6 +11,11 @@ export const login = async (data: Login) => {
 	return response.data;
 };
 
+export const logout = async () => {
+	const response = await api.post("/logout");
+	return response.data;
+};
+
 export const getCurrentUser = async (authHeader?: string) => {
 	const response = await api.get("/auth/me", {
 		headers: {

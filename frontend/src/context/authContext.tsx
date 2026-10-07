@@ -1,6 +1,9 @@
 "use client";
 
-import { getCurrentUser } from "@/features/auth/services/auth.service";
+import {
+	getCurrentUser,
+	logout as logoutRequest,
+} from "@/features/auth/services/auth.service";
 import { User } from "@/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -9,6 +12,7 @@ interface AuthContextTypes {
 	loading: boolean;
 	getUser: () => Promise<void>;
 	logout: () => Promise<void>;
+	setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextTypes | null>(null);
@@ -20,10 +24,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const getUser = async () => {
 		try {
 			const result = await getCurrentUser();
-			setUser(result.data);			
+			setUser(result.data);
 		} catch (error) {
 			console.log(error);
-			setUser(null)
+			setUser(null);
 		} finally {
 			setLoading(false);
 		}
@@ -34,10 +38,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		getUser();
 	}, []);
 
-	const logout = async () => {};
+	const logout = async () => {
+		await logoutRequest();
+		setUser(null);
+	};
 
 	return (
-		<AuthContext.Provider value={{ user, loading, getUser, logout }}>
+		<AuthContext.Provider value={{ user, loading, getUser, logout, setUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

@@ -3,6 +3,7 @@ const {
 	registerController,
 	loginController,
 	authController,
+	logoutController,
 } = require("../controllers/user.controller");
 const protectRoute = require("../middlewares/auth.middleware");
 const asyncWrap = require("../utils/asyncWrap.utils");
@@ -17,6 +18,7 @@ router.post(
 	asyncWrap(registerController),
 );
 router.post("/login", validateRequest(loginSchema), asyncWrap(loginController));
+router.post("/logout", logoutController);
 router.get("/auth/me", protectRoute, authController);
 
 module.exports = router;

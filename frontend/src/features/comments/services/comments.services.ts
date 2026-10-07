@@ -15,7 +15,3 @@ export const getComments = async (postId: string) => {
 	return response.data;
 };
 
-export const getAllComments = async () => {
-	const response = await api.get(`/comment`);
-	return response.data;
-};
