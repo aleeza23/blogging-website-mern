@@ -10,13 +10,13 @@ const cors = require("cors");
 const errorHandler = require("./middlewares/error.middleware");
 var cookieParser = require("cookie-parser");
 
-const origins = ["http://localhost:3000", "https://blognest-mern.vercel.app/"];
+const origins = ["http://localhost:3000", "https://blognest-mern.vercel.app"];
 app.use(
 	cors({
 		origin: (origin, callback) => {
 			if (!origin) return callback(null, true);
 			if (origins.includes(origin)) return callback(null, true);
-			callback(new Error("Not allowed by cors"));
+			return callback(new Error("Not allowed by cors"));
 		},
 		credentials: true,
 	}),
