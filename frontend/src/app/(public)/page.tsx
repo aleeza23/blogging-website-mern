@@ -11,17 +11,19 @@ import PopularPosts from "@/features/posts/components/PopularPosts";
 import { getPosts } from "@/features/posts/services/post.services";
 import { Post } from "@/features/posts/types";
 import PostPagination from "@/features/posts/components/Pagination";
+import SearchInput from "@/features/posts/components/SearchInput";
 
 export default async function Home({
 	searchParams,
 }: {
-	searchParams: Promise<{ page: string }>;
+	searchParams: Promise<{ page: string; search: string }>;
 }) {
 	const params = await searchParams;
 	const page = Number(params.page) || 1;
 	const limit = 2;
+	const search = params.search || "";
 
-	const data = await getPosts(page, limit);
+	const data = await getPosts(page, limit, search);
 
 	return (
 		<Container className="grid lg:grid-cols-3 gap-10 items-start pt-32">
@@ -40,16 +42,7 @@ export default async function Home({
 
 			{/* right side panel */}
 			<aside className="space-y-6">
-				<Field className="gap-2.5">
-					<FieldLabel htmlFor="inline-start-input">Search</FieldLabel>
-					<InputGroup className="bg-white">
-						<InputGroupInput id="inline-start-input" placeholder="Search..." />
-						<InputGroupAddon align="inline-start">
-							<SearchIcon className="text-muted-foreground" />
-						</InputGroupAddon>
-					</InputGroup>
-					<FieldDescription>Search any blog</FieldDescription>
-				</Field>
+				<SearchInput />
 
 				<PopularPosts />
 			</aside>

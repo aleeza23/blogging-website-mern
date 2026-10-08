@@ -114,7 +114,7 @@ const getPostsController = async (req, res) => {
 	});
 };
 
-const getUserPosts = async (req, res) => {
+const getUserPostsController = async (req, res) => {
 	const { status } = req.query;
 	const userId = req.user._id;
 	const page = Math.max(parseInt(req.query.page) || 1, 1);
@@ -144,11 +144,15 @@ const getUserPosts = async (req, res) => {
 	});
 };
 
+const getPopularPostsController = (req, res) => {
+const filter = {}
+}
+
 module.exports = {
 	createPostController,
 	getPostController,
 	deletePostController,
 	updatePostController,
 	getPostsController,
-	getUserPosts,
+	getUserPostsController,
 };

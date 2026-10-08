@@ -116,7 +116,7 @@ const PostForm = ({ mode, slug }: Props) => {
 				toast.success("Post created successfully");
 			}
 
-			router.push("/admin/posts");
+			router.push("/user/posts");
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				toast.error(error?.response?.data?.message || "Something went wrong");

@@ -90,7 +90,7 @@ const Navbar = () => {
 									<Button
 										variant="outline"
 										nativeButton={false}
-										render={<Link href="/admin/dashboard" />}
+										render={<Link href="/user/dashboard" />}
 									>
 										<LayoutDashboard className="size-4" />
 										Dashboard
@@ -206,7 +206,7 @@ const Navbar = () => {
 							<>
 								<Button
 									variant="outline"
-									render={<Link href="/admin/dashboard" />}
+									render={<Link href="/user/dashboard" />}
 									nativeButton={false}
 								>
 									<LayoutDashboard className="size-4" />

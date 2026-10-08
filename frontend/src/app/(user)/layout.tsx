@@ -1,4 +1,4 @@
-import AdminNavbar from "@/components/layout/AdminNavbar";
+import AdminNavbar from "@/components/layout/userNavbar";
 import Container from "@/components/layout/Container";
 import AppSidebar from "@/components/ui/app-sidebar";
 import { Separator } from "@/components/ui/separator";

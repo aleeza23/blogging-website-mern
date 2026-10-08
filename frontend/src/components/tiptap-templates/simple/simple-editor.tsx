@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
-// --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
 import { Image } from "@tiptap/extension-image";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
@@ -15,7 +14,6 @@ import { Superscript } from "@tiptap/extension-superscript";
 import { FindAndReplace } from "@tiptap/extension-find-and-replace";
 import { Selection } from "@tiptap/extensions";
 
-// --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button";
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
 import {
@@ -208,7 +206,7 @@ export function SimpleEditor({
 	onChange,
 	initialContent = "",
 }: {
-	onChange: (html: string) => void;
+	onChange?: (html: string) => void;
 	initialContent?: string;
 }) {
 	const isMobile = useIsBreakpoint();
@@ -263,7 +261,7 @@ export function SimpleEditor({
 		],
 		content: initialContent || "",
 		onUpdate: ({ editor }) => {
-			onChange(editor.getHTML());
+			onChange?.(editor.getHTML());
 		},
 	});
 

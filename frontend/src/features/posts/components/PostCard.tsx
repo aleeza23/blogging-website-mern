@@ -69,7 +69,7 @@ const PostCard = ({
 							variant="secondary"
 							className="size-8 rounded-full shadow-md"
 							aria-label={`Edit ${title}`}
-							render={<Link href={`/admin/posts/edit/${slug}`} />}
+							render={<Link href={`/user/posts/edit/${slug}`} />}
 						>
 							<Pencil className="size-3.5" />
 						</Button>

@@ -25,7 +25,7 @@ const PublishedPosts = async ({
 			<div className="flex flex-wrap justify-between gap-2.5">
 				<h2 className="text-xl font-bold mb-6">Posts</h2>
 				<Link
-					href="/admin/posts/add"
+					href="/user/posts/add"
 					className={cn(buttonVariants({ variant: "default" }))}
 				>
 					Create new post

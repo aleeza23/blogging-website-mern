@@ -391,7 +391,7 @@ export const handleImageUpload = async (
 
 	const result = await uploadImage(file, {
 		signal: abortSignal,
-		onProgress: (progress) => onProgress({ progress }),
+		onProgress: (progress) => onProgress?.({ progress }),
 	});
 	return result.data.imageUrl;
 };

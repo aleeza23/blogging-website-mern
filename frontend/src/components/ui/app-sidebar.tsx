@@ -43,27 +43,27 @@ import { logout } from "@/features/auth/services/auth.service";
 const navItems = [
 	{
 		title: "Dashboard",
-		href: "/admin/dashboard",
+		href: "/user/dashboard",
 		icon: LayoutDashboard,
 	},
 	{
 		title: "Published Posts",
-		href: "/admin/posts",
+		href: "/user/posts",
 		icon: FileText,
 	},
 	{
 		title: "Draft Posts",
-		href: "/admin/draft",
+		href: "/user/draft",
 		icon: Edit,
 	},
 	{
 		title: "Comments",
-		href: "/admin/comments",
+		href: "/user/comments",
 		icon: MessageSquare,
 	},
 	// {
 	// 	title: "Users",
-	// 	href: "/admin/users",
+	// 	href: "/user/users",
 	// 	icon: Users,
 	// },
 ];
