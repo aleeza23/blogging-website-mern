@@ -145,8 +145,8 @@ const getUserPostsController = async (req, res) => {
 };
 
 const getPopularPostsController = (req, res) => {
-const filter = {}
-}
+	const filter = {};
+};
 
 module.exports = {
 	createPostController,

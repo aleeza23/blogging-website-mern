@@ -20,7 +20,7 @@ export default async function Home({
 }) {
 	const params = await searchParams;
 	const page = Number(params.page) || 1;
-	const limit = 2;
+	const limit = 6;
 	const search = params.search || "";
 
 	const data = await getPosts(page, limit, search);
