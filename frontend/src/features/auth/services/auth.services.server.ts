@@ -11,6 +11,7 @@ export const getUser = async (): Promise<User | null> => {
 			cookie: authHeader,
 		},
 	});
+	console.log(result.data.data, "server user");
 
 	return result.data.data;
 };
