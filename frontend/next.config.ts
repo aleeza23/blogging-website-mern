@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				source: "/api/:path*",
-				destination: "https://blogging-website-mern-5hnp.vercel.app/api/:path*",
+				destination: `${process.env.API_URL}/:path*`,
 			},
 		];
 	},
