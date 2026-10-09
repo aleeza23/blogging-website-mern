@@ -32,7 +32,7 @@ const PopularPosts = ({ posts }: PopularPostsProps) => {
 									className="w-24 h-12 shrink-0 rounded object-fill"
 								/>
 
-								<span className="text-sm leading-snug font-bold text-slate-900 group-hover:underline">
+								<span className="text-sm leading-snug line-clamp-2 font-bold text-slate-900 group-hover:underline">
 									{post.title}
 								</span>
 							</Link>

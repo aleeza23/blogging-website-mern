@@ -16,6 +16,7 @@ import { Signup } from "../types";
 import { signup } from "../services/auth.service";
 import { toast } from "sonner";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
 	const [signupData, setSignupData] = useState<Signup>({
@@ -24,6 +25,7 @@ const RegisterForm = () => {
 		email: "",
 		password: "",
 	});
+	const router = useRouter();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSignupData((prev) => ({
@@ -36,7 +38,8 @@ const RegisterForm = () => {
 		e.preventDefault();
 		try {
 			await signup(signupData);
-			toast.success("User registered successfully");			
+			toast.success("User registered successfully");
+			router.push("/login")
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				toast.error(error?.response?.data?.message || "Something went wrong!");
