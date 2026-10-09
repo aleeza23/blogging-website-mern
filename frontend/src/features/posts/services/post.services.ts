@@ -22,8 +22,19 @@ export const getPost = async (slug: string) => {
 	return response.data;
 };
 
-export const getPosts = async (page?: Number, limit?: Number, search?: string) => {
-	const response = await api.get(`/posts?page=${page}&limit=${limit}&search=${search}`);
+export const getPosts = async (
+	page?: Number,
+	limit?: Number,
+	search?: string,
+) => {
+	const response = await api.get(
+		`/posts?page=${page}&limit=${limit}&search=${search}`,
+	);
+	return response.data;
+};
+
+export const getPopularPosts = async () => {
+	const response = await api.get(`/posts/popular`);
 	return response.data;
 };
 

@@ -18,3 +18,13 @@ export const getUserPosts = async (
 	);
 	return response.data;
 };
+
+export const getStats = async () => {
+	const authHeader = await getAuthHeader();
+	const response = await api.get(`/posts/stats`, {
+		headers: {
+			cookie: authHeader,
+		},
+	});
+	return response.data;
+};

@@ -15,7 +15,6 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
 	const user = await getUser();
 
 	const SIDEBAR_WIDTH = "15rem";
-	const SIDEBAR_WIDTH_ICON = "2rem";
 
 	if (!user) {
 		redirect("/");

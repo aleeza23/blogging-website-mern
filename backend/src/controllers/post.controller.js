@@ -2,6 +2,7 @@ const Post = require("../models/post.model");
 const AppError = require("../utils/error.utils");
 const slugify = require("slugify");
 const uploadToCloudinary = require("../utils/uploadToCloudinary.utils");
+const Comment = require("../models/comment.model");
 
 // create post
 const createPostController = async (req, res) => {
@@ -144,8 +145,45 @@ const getUserPostsController = async (req, res) => {
 	});
 };
 
-const getPopularPostsController = (req, res) => {
-	const filter = {};
+const getPopularPostsController = async (req, res) => {
+	const posts = await Post.aggregate([
+		{ $match: { status: "published" } },
+		{
+			$lookup: {
+				from: "comments",
+				localField: "_id",
+				foreignField: "post",
+				as: "comments",
+			},
+		},
+		{
+			$addFields: {
+				commentCount: { $size: "$comments" },
+			},
+		},
+		{ $match: { commentCount: { $gt: 0 } } },
+		{ $sort: { commentCount: -1 } },
+		{ $limit: 6 },
+	]);
+
+	res.status(200).json({ success: true, data: posts });
+};
+
+const getStatsController = async (req, res) => {
+	const userId = req.user._id;
+
+	const [myComments, myPublishedPosts, myDraftPosts, totalPublishedPosts] =
+		await Promise.all([
+			Comment.countDocuments({ author: userId }),
+			Post.countDocuments({ author: userId, status: "published" }),
+			Post.countDocuments({ author: userId, status: "draft" }),
+			Post.countDocuments({ status: "published" }),
+		]);
+
+	res.status(200).json({
+		success: true,
+		data: { totalPublishedPosts, myPublishedPosts, myDraftPosts, myComments },
+	});
 };
 
 module.exports = {
@@ -155,4 +193,6 @@ module.exports = {
 	updatePostController,
 	getPostsController,
 	getUserPostsController,
+	getPopularPostsController,
+	getStatsController,
 };

@@ -6,7 +6,9 @@ const {
 	deletePostController,
 	updatePostController,
 	getPostsController,
-	getUserPosts,
+	getPopularPostsController,
+	getUserPostsController,
+	getStatsController,
 } = require("../controllers/post.controller");
 const protectRoute = require("../middlewares/auth.middleware");
 const validateRequest = require("../middlewares/validate.middleware");
@@ -22,7 +24,9 @@ router.post(
 	asyncWrap(createPostController),
 );
 router.get("/posts", asyncWrap(getPostsController));
-router.get("/posts/my", protectRoute, asyncWrap(getUserPosts));
+router.get("/posts/my", protectRoute, asyncWrap(getUserPostsController));
+router.get("/posts/popular", asyncWrap(getPopularPostsController));
+router.get("/posts/stats", protectRoute, asyncWrap(getStatsController));
 router.get("/posts/:slug", asyncWrap(getPostController));
 router.delete("/posts/:slug", protectRoute, asyncWrap(deletePostController));
 router.patch("/posts/:slug", protectRoute, asyncWrap(updatePostController));

@@ -8,7 +8,10 @@ import {
 } from "@/components/ui/input-group";
 import { SearchIcon } from "lucide-react";
 import PopularPosts from "@/features/posts/components/PopularPosts";
-import { getPosts } from "@/features/posts/services/post.services";
+import {
+	getPopularPosts,
+	getPosts,
+} from "@/features/posts/services/post.services";
 import { Post } from "@/features/posts/types";
 import PostPagination from "@/features/posts/components/Pagination";
 import SearchInput from "@/features/posts/components/SearchInput";
@@ -24,6 +27,8 @@ export default async function Home({
 	const search = params.search || "";
 
 	const data = await getPosts(page, limit, search);
+	const popularPosts = await getPopularPosts();
+	console.log(popularPosts.data);
 
 	return (
 		<Container className="grid lg:grid-cols-3 gap-10 items-start pt-32">
@@ -44,7 +49,7 @@ export default async function Home({
 			<aside className="space-y-6">
 				<SearchInput />
 
-				<PopularPosts />
+				<PopularPosts posts={popularPosts?.data ?? []} />
 			</aside>
 		</Container>
 	);
