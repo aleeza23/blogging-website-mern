@@ -4,10 +4,10 @@ const api: AxiosInstance = axios.create({
 	// baseURL:
 	// 	typeof window === "undefined"
 	// 		? process.env.API_URL
-	// 		: process.env.NEXT_PUBLIC_API_URL, //works on local not live
+	// 		: process.env.NEXT_PUBLIC_API_URL, 
 
-	baseURL: typeof window === "undefined" ? process.env.API_URL : "/api", //works for live site not works on local
-
+	baseURL: typeof window === "undefined" ? process.env.API_URL : "/api", 
+	
 	timeout: 10000,
 	withCredentials: true,
 	headers: {
