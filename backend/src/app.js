@@ -6,6 +6,8 @@ const postRoute = require("./routes/post.routes");
 const commentRoute = require("./routes/comment.routes");
 const imageRoutes = require("./routes/image.routes");
 
+app.set("trust proxy", 1); 
+
 const cors = require("cors");
 const errorHandler = require("./middlewares/error.middleware");
 var cookieParser = require("cookie-parser");
